@@ -1,4 +1,4 @@
-package ru.sbrf.posttime.mbeans;
+package ru.sbrf.mbeans;
 
 public class Cl implements ClMBean {
 
