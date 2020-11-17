@@ -1,4 +1,4 @@
-package ru.sbrf;
+package ru.sbrf.posttime;
 
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;

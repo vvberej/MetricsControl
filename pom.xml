@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.9</dropwizard.version>
-        <mainClass>ru.sbrf.MetricsControlApplication</mainClass>
+        <mainClass>ru.sbrf.posttime.MetricsControlApplication</mainClass>
     </properties>
 
     <dependencyManagement>
@@ -136,7 +136,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>4.0.0</version>
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                     <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
