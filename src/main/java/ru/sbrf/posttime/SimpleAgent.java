@@ -8,33 +8,33 @@ import ru.sbrf.mbeans.*;
 
 public class SimpleAgent
 {
-    private MBeanServer mbs = null;
-
     public SimpleAgent()
     {
         // Получить экземпляр MBeanServer
-        mbs = ManagementFactory.getPlatformMBeanServer();
-        //HtmlAdaptorServer adapter = new HtmlAdaptorServer();
-
-        // Создаем наш MBean
-        ObjectName beanname = null;
-        Cl mbean = new Cl();
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
+        // Создание MBean
+        ObjectName beanname = null;
+        Cl mbean = new Cl();
+        mbean.setName("Impl1");
+
         try {
-            // И регистрируем его на платформе MBeanServer
+            // Регистрация mbean на платформе MBeanServer
             beanname = new ObjectName("ru.sbrf.mbeans:type=Cl");
             mbs.registerMBean(mbean, beanname);
 
-            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:8082/jmxrmi");// new JMXServiceURL("service:jmx:rmi://");
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:8082/jmxrmi");
             JMXConnectorServer cs =
                     JMXConnectorServerFactory.newJMXConnectorServer(url, null, mbs);
             LocateRegistry.createRegistry(8082);
             cs.start();
-            JMXServiceURL addr = cs.getAddress();
-            JMXConnector cc = JMXConnectorFactory.connect(addr);
+            //JMXServiceURL addr = cs.getAddress();
+            //JMXConnector cc = JMXConnectorFactory.connect(addr);
 
-            System.out.println(addr.getURLPath());
+            //System.out.println(addr.getURLPath());
+
+            waitForEnterPressed();
+                cs.stop();
 
         } catch(Exception e) {
             e.printStackTrace();

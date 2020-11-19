@@ -1,9 +1,8 @@
 package ru.sbrf.gettime;
 
+import ru.sbrf.mbeans.ClMBean;
+
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
-import javax.management.Attribute;
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -11,54 +10,39 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import ru.sbrf.mbeans.*;
-
 public class Client {
 
     public static void main(String[] args) {
         try {
-            // Create an RMI connector client and
-            // connect it to the RMI connector server
-
+            // Создание подключения к RMI серверу
             JMXServiceURL url = new JMXServiceURL(
-                      "service:jmx:rmi:///jndi/rmi://localhost:8082/server");
+                      "service:jmx:rmi:///jndi/rmi://localhost:8082/jmxrmi");
             JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 
-            // Create listener
-            //
-            ClientListener listener = new ClientListener();
-
-            // Get an MBeanServerConnection
-            //
-            echo("\nGet an MBeanServerConnection");
+            // Получение MBeanServerConnection
             MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-            waitForEnterPressed();
 
-            // Get domains from MBeanServer
-            //
-            echo("\nDomains:");
+            //домены доступные для подключения
             String domains[] = mbsc.getDomains();
             for (int i = 0; i < domains.length; i++) {
                 echo("\tDomain[" + i + "] = " + domains[i]);
             }
+            //подключение к нужному mbean
+            ObjectName mBeanName = new ObjectName("ru.sbrf.mbeans:type=Cl");
+            ClMBean proxy = JMX.newMBeanProxy(mbsc, mBeanName, ClMBean.class, true);
+            String nnm = proxy.getName();
+            echo("\tConnected to Bean with Name" + proxy.getName());
 
-            // Get MBeanServer's default domain
-            //
-            String domain = mbsc.getDefaultDomain();
+            ClientListener listener = new ClientListener();
+            mbsc.addNotificationListener(mBeanName, listener, null, null);
 
-            // Create MBean
-            //
-            ObjectName mBeanName =
-                new ObjectName(domain +":type=Cl");
-            echo("\nCreate MBean...");
-            mbsc.createMBean("Cl", mBeanName, null, null);
+            //запрос метрики у удаленного mbean
+            long remoteTime = proxy.getTimeInMillis();
+            long deltaTime = System.currentTimeMillis() - remoteTime;
+            echo("\tdelta time = " + deltaTime);
 
-            Cl proxy = JMX.newMBeanProxy(
-                    mbsc, mBeanName, Cl.class, true);
-            echo("\nState = " + proxy.getTimeInMillis());
-
-            // Close MBeanServer connection
             waitForEnterPressed();
+            // Закрытие соединение с RMI сервером
             jmxc.close();
         } catch (Exception e) {
             e.printStackTrace();

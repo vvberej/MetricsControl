@@ -1,9 +1,16 @@
 package ru.sbrf.mbeans;
 
-public class Cl implements ClMBean {
+import javax.management.NotificationBroadcasterSupport;
+
+public class Cl extends NotificationBroadcasterSupport implements ClMBean {
+    String mName = "default";
 
     public String getName() {
-        return "ClMBeanImpl";
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
     }
 
     public long getTimeInMillis() {
