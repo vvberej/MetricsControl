@@ -8,7 +8,7 @@ import ru.sbrf.mbeans.*;
 
 public class SimpleAgent
 {
-    public SimpleAgent()
+    public SimpleAgent(String ipAdr, String port)
     {
         // Получить экземпляр MBeanServer
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -23,7 +23,8 @@ public class SimpleAgent
             beanname = new ObjectName("ru.sbrf.mbeans:type=Cl");
             mbs.registerMBean(mbean, beanname);
 
-            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:8082/jmxrmi");
+            JMXServiceURL url = new JMXServiceURL(
+                    "service:jmx:rmi:///jndi/rmi://" + ipAdr + ":" + port + "/jmxrmi");
             JMXConnectorServer cs =
                     JMXConnectorServerFactory.newJMXConnectorServer(url, null, mbs);
             LocateRegistry.createRegistry(8082);
@@ -53,10 +54,18 @@ public class SimpleAgent
         }
     }
 
-    public static void main(String argv[])
+    public static void main(String args[])
     {
-        SimpleAgent agent = new SimpleAgent();
         System.out.println("SimpleAgent is running...");
+        //String ipAdr="localhost";
+        String ipAdr="192.168.1.237";
+        String port = "8082";
+
+        if(args.length > 1) {  //если через консоль были введены аргументы
+            ipAdr = args[0];
+            port = args[1];
+        }
+        SimpleAgent agent = new SimpleAgent(ipAdr, port);
         SimpleAgent.waitForEnterPressed();
         //Thread.sleep(Long.MAX_VALUE);
         //while(true) {}

@@ -29,7 +29,7 @@ public class MetricsControlApplication extends Application<MetricsControlConfigu
         // TODO: implement application
         System.out.println("running here");
 
-        SimpleAgent jmxAgent = new SimpleAgent();
+        SimpleAgent jmxAgent = new SimpleAgent("localhost" , "8082");
 
     }
 

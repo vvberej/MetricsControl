@@ -14,9 +14,17 @@ public class Client {
 
     public static void main(String[] args) {
         try {
+            String ipAdr="localhost";
+            String port = "8082";
+
+            if(args.length > 1) {  //если через консоль были введены аргументы
+                ipAdr = args[0];
+                port = args[1];
+            }
+
             // Создание подключения к RMI серверу
             JMXServiceURL url = new JMXServiceURL(
-                      "service:jmx:rmi:///jndi/rmi://localhost:8082/jmxrmi");
+                      "service:jmx:rmi:///jndi/rmi://" + ipAdr + ":" + port + "/jmxrmi");
             JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 
             // Получение MBeanServerConnection
